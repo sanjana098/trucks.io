@@ -134,3 +134,4 @@ if __name__ == '__main__':
 	# model = TruckModel('TataMini',1,450)
 	# db.session.add(model)
 	# db.session.commit()
+	print("hi")
