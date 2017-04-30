@@ -55,20 +55,22 @@ class Truck(db.Model):
 	__tablename__ = 'truckDetails'
 	id          = db.Column(db.Integer, primary_key=True)    # The truck number
 	truck_model = db.Column(db.String(50))
+	source      = db.Column(db.String(50))
 	max_weight  = db.Column(db.Float, default = 0.0)
 	max_volume  = db.Column(db.Float, default = 0.0)
 	owner_id    = db.Column(db.Integer, db.ForeignKey('truckOwners.id'))
 
 	plan   = db.relationship("JourneyPlan", backref="truckDetails")
 
-	def __init__(self,truck_model,max_weight,max_volume,owner_id):
+	def __init__(self,truck_model,source, max_weight,max_volume,owner_id):
 		self.truck_model = truck_model
+		self.source      = source
 		self.max_weight  = max_weight
 		self.max_volume  = max_volume
 		self.owner_id    = owner_id
 
 	def __repr__(self):
-		return 'Truck %r %.2f %.2f %d'%(self.truck_model, self.max_weight, self.max_volume, self.owner_id)
+		return 'Truck %r %r %.2f %.2f %d'%(self.truck_model, self.source, self.max_weight, self.max_volume, self.owner_id)
 
 
 class BookingRequest(db.Model):
