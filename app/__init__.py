@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
-from flask_inputs.validators import JsonSchema
+from validationSchema import *
+from jsonschema import validate
 from datetime import datetime
 from models import *
 
@@ -21,11 +22,16 @@ def listModel():
 	return jsonify({'response' : result})
 
 
-
 @app.route('/api/add/truck', methods=['POST'])
 def addTruck():
 
 	q   = request.get_json()
+
+	try:
+		validate(q, truck_schema)
+	except:
+		return jsonify(success= False, errors= 'Invalid parameters')
+		
 	res = TruckModel.query.filter_by(truck_model = q['truck_model'], max_weight = q['max_weight'], max_volume = q['max_volume'])
 
 	if res.count() != 0:
@@ -35,8 +41,8 @@ def addTruck():
 	db.session.add(r)
 	db.session.commit()
 	
-	return jsonify({'response' : 'Added'})
-	# return jsonify(success = True)
+	# return jsonify({'response' : 'Added'})
+	return jsonify(success = True)
 
 
 
@@ -44,6 +50,12 @@ def addTruck():
 def bookingRequest():
 
 	q  = request.get_json()
+
+	try:
+		validate(q, booking_schema)
+	except:
+		return jsonify(success= False, errors= 'Invalid parameters')
+
 	res = BookingRequest.query.filter_by(source = q['source'], destination = q['destination'], item_desc = q['item_desc'], weight = q['weight'], volume = q['volume'], start_date = q['start_date'], end_date = q['end_date'])
 
 	if res.count() != 0:
@@ -53,7 +65,8 @@ def bookingRequest():
 	db.session.add(r)
 	db.session.commit()
 
-	return jsonify({'response' : 'Added'})
+	return jsonify(success = True)
+	# return jsonify({'response' : 'Added'})
 
 
 
@@ -61,7 +74,12 @@ def bookingRequest():
 def findLastDestination():
 
 	truck_id = request.json('truck_id')
-	res = JourneyPlan.query.order_by(JourneyPlan.id.desc()).filter_by(accepted = 1, end_date < datetime.now()).first()
+	try:
+		validate(truck_id, truck_location_schema)
+	except:
+		return jsonify(success= False, errors= 'Invalid parameters')
+	
+	res = JourneyPlan.query.order_by(JourneyPlan.id.desc()).filter_by(accepted = 1).filter( end_date <= datetime.now()).first()
 	
 	if res.count() == 0:
 		res = Truck.query.filter_by(id = truck_id)
