@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 app = Flask(__name__)
 db = SQLAlchemy(app)
@@ -107,7 +108,9 @@ class JourneyPlan(db.Model):
 	__tablename__ = 'journeyPlans'
 	id          = db.Column(db.Integer, primary_key=True)
 	booking_id  = db.Column(db.Integer, db.ForeignKey('bookingRequests.id')) 
+	plan_type   = db.Column(db.Integer)
 	truck_id    = db.Column(db.Integer, db.ForeignKey('truckDetails.id'))
+	source      = db.Column(db.String(60))
 	destination = db.Column(db.String(60))
 	weight      = db.Column(db.Float, default=0.0)
 	volume      = db.Column(db.Float, default=0.0)
@@ -116,10 +119,11 @@ class JourneyPlan(db.Model):
 	price       = db.Column(db.Float, default=0.0)
 	accepted    = db.Column(db.Boolean, default=0)
 
-	def __init__(self,booking_id,truck_id,destination,weight,volume,start_date,end_date,price,accepted):
+	def __init__(self,booking_id,plan_type,truck_id,source,destination,weight,volume,start_date,end_date,price,accepted):
 		self.booking_id  =  booking_id
+		self.plan_type   =  plan_type
 		self.truck_id    =  truck_id
-		self.destination =  destination
+		self.source      =  source
 		self.weight      =  weight
 		self.volume      =  volume
 		self.start_date  =  start_date
@@ -128,12 +132,30 @@ class JourneyPlan(db.Model):
 		self.accepted    =  accepted
 
 	def __repr__(self):
-		return 'Journey Plan %d %d %r %.2f %.2f %s %s %.2f %d'%(self.booking_id, self.truck_id, self.destination, self.weight, self.volume, self.start_date, self.end_date, self.price, self.accepted)
+		return 'Journey Plan %d %d %d %r %r %.2f %.2f %s %s %.2f %d'%(self.booking_id, self.plan_type, self.truck_id, self.source, self.destination, self.weight, self.volume, self.start_date, self.end_date, self.price, self.accepted)
 
 
 if __name__ == '__main__':
 	# db.create_all()
-	# model = TruckModel('TataMini',1,450)
-	# db.session.add(model)
+	# a = TruckOwner("ABCD")
+	# b = Truck("Tata Mini Ace", "Chennai", 21.11, 133.12, 1)
+	# g = Truck("Tata Mini", "Chennai", 21.11, 133.12, 1)
+	# c = Customer("EFGH")
+	# d = BookingRequest(1,"Chennai", "Hyderabad", "Refrigerator", 12.22, 123.12, datetime(2017,5,5,0,0,0),  datetime(2017,5,12,0,0,0))
+	# e = JourneyPlan(1,1,1,"Chennai","Hyderabad",12.22, 123.12, datetime(2017,5,5,0,0,0), datetime(2017,5,12,0,0,0), 12000, 0)
+	# f = JourneyPlan(1,1,2,"Chennai","Hyderabad",12.22, 123.12, datetime(2017,5,6,0,0,0), datetime(2017,5,11,0,0,0), 12000, 0)
+	# db.session.add(a)
+	# db.session.commit()
+	# db.session.add(b)
+	# db.session.commit()
+	# db.session.add(c)
+	# db.session.commit()
+	# db.session.add(d)
+	# db.session.commit()
+	# db.session.add(e)
+	# db.session.commit()
+	# db.session.add(f)
+	# db.session.commit()
+	# db.session.add(g)
 	# db.session.commit()
 	print("hi")

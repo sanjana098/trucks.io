@@ -54,7 +54,32 @@ booking_schema = {
 truck_location_schema = {
 	"type": "object",
 	"properties": {
-		"truck_id": "number"
+		"truck_id":  {
+			"type" :"number"
+		}
 	},
 	"required": ["truck_id"]
+}
+
+plan_schema = {
+	"type": "object",
+	"properties": {
+		"user_id": {
+			"type" :"number"
+		},
+		"booking_id":  {
+			"type" :"number"
+		}
+	},
+	"required": ["user_id","booking_id"]
+}
+
+plan_id_schema = {
+	"type": "object",
+	"properties": {
+		"plan_id": {
+			"type" :"number"
+		}
+	},
+	"required": ["plan_id"]
 }
